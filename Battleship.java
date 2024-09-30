@@ -47,7 +47,7 @@ public class Battleship {
         }
 
         while (mediumShipsNumber > 0) {
-            mediumShipPosition = generateShipCoordinates(mediumShipPosition.length/2, gameBoardLength, gameBoard, mediumShip, water, takenSpaces);
+            mediumShipPosition = generateShipCoordinates(mediumShipPosition.length/2, gameBoardLength, gameBoard, (char)(65+mediumShipsNumber), water, takenSpaces);
             for (int i = 0; i < 4; i += 2) {
                 gameBoard[mediumShipPosition[i]][mediumShipPosition[i+1]] = mediumShip;
             }
@@ -55,7 +55,7 @@ public class Battleship {
         }
 
         while (smallShipsNumber > 0) {
-            smallShipPosition = generateShipCoordinates(smallShipPosition.length/2, gameBoardLength, gameBoard, smallShip, water, takenSpaces);
+            smallShipPosition = generateShipCoordinates(smallShipPosition.length/2, gameBoardLength, gameBoard, (char)(68+smallShipsNumber), water, takenSpaces);
             for (int i = 0; i < 2; i += 2) {
                 gameBoard[smallShipPosition[i]][smallShipPosition[i+1]] = smallShip;
             }
