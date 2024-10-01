@@ -10,6 +10,7 @@ public class Battleship {
         char water = '-';
         char miss = 'O';
         char hit = 'X';
+        char sunk = 'S';
         char smallShip = 's';
         char mediumShip = 'm';
         char bigShip = 'b';
@@ -25,12 +26,8 @@ public class Battleship {
 
         gameBoard = placeShips(gameBoardLength, gameBoard, bigShip, smallShip, mediumShip, water, bigShipsNumber, mediumShipsNumber, smallShipsNumber, takenSpaces);
 
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
-                System.out.print(gameBoard[i][j] + "  ");
-            }
-            System.out.println();
-        }
+        displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
+
     }
 
     private static char[][] placeShips(int gameBoardLength, char[][] gameBoard, char bigShip, char smallShip, char mediumShip, char water, int bigShipsNumber, int mediumShipsNumber, int smallShipsNumber, ArrayList<Integer> takenSpaces) {
@@ -137,6 +134,30 @@ public class Battleship {
         } while(!shipPlaced);
     
         return coordinates;
+    }
+
+    private static void displayGameBoardToUser(char[][] gameBoard, int gameBoardLength, char water, char hit, char miss, char sunk) {
+
+        System.out.println("   1  2  3  4  5  6  7");
+        for (int i = 0; i < gameBoardLength; i++) { 
+            System.out.print((char)('A' + i) + "  ");
+            for (int j = 0; j < gameBoardLength; j++) {
+                if (gameBoard[i][j] != hit && gameBoard[i][j] != miss && gameBoard[i][j] != sunk) {
+                    System.out.print(water + "  ");
+                }
+                else if (gameBoard[i][j] == hit) {
+                    System.out.print(hit + "  ");
+                }
+                else if (gameBoard[i][j] == miss) {
+                    System.out.print(miss + "  ");
+                }
+                else {
+                    System.out.print(sunk + "  ");
+                }
+            }
+            System.out.println();
+        }
+
     }
 
     private static char[][] createGameBoard(int gameBoardLength, char water) {
