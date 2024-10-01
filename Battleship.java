@@ -39,7 +39,7 @@ public class Battleship {
         int[] smallShipPosition = new int[2];
 
         while (bigShipsNumber > 0) {
-            bigShipPosition = generateShipCoordinates(bigShipPosition.length/2, gameBoardLength, gameBoard, bigShip, water, takenSpaces);
+            bigShipPosition = generateShipCoordinates(bigShipPosition.length/2, gameBoardLength, gameBoard, 'a', water, takenSpaces);
             for (int i = 0; i < 6; i += 2) {
                 gameBoard[bigShipPosition[i]][bigShipPosition[i+1]] = bigShip;
             }
@@ -47,7 +47,7 @@ public class Battleship {
         }
 
         while (mediumShipsNumber > 0) {
-            mediumShipPosition = generateShipCoordinates(mediumShipPosition.length/2, gameBoardLength, gameBoard, (char)(65+mediumShipsNumber), water, takenSpaces);
+            mediumShipPosition = generateShipCoordinates(mediumShipPosition.length/2, gameBoardLength, gameBoard, 'a', water, takenSpaces);
             for (int i = 0; i < 4; i += 2) {
                 gameBoard[mediumShipPosition[i]][mediumShipPosition[i+1]] = mediumShip;
             }
@@ -55,7 +55,7 @@ public class Battleship {
         }
 
         while (smallShipsNumber > 0) {
-            smallShipPosition = generateShipCoordinates(smallShipPosition.length/2, gameBoardLength, gameBoard, (char)(68+smallShipsNumber), water, takenSpaces);
+            smallShipPosition = generateShipCoordinates(smallShipPosition.length/2, gameBoardLength, gameBoard, 'a', water, takenSpaces);
             for (int i = 0; i < 2; i += 2) {
                 gameBoard[smallShipPosition[i]][smallShipPosition[i+1]] = smallShip;
             }
@@ -74,7 +74,7 @@ public class Battleship {
                 if (shipPosition[i] + row >= 0 && shipPosition[i] + row < 7){
                     for (int col = -1; col<2;col++) {
                         if (shipPosition[i + 1] + col >= 0 && shipPosition[i + 1] + col < 7){
-                            if (gameBoard[shipPosition[i]+row][shipPosition[i+1]+col] == ship || gameBoard[shipPosition[i]+row][shipPosition[i+1]+col] == water){
+                            if (gameBoard[shipPosition[i]+row][shipPosition[i+1]+col] == water){
                                 continue;
                             }
                             else {
@@ -97,7 +97,9 @@ public class Battleship {
 
         do {
             int direction = new Random().nextInt(2);
-            if (direction == 0) {
+            boolean buildRight = direction == 0;
+            // direction == 1 is buildDown
+            if (buildRight) {
                 coordinates[0] = new Random().nextInt(gameBoardLength);
                 coordinates[1] = new Random().nextInt(gameBoardLength - shipLength + 1);
             }
@@ -106,7 +108,7 @@ public class Battleship {
                 coordinates[1] = new Random().nextInt(gameBoardLength);
             }
             
-            if (direction == 0) {
+            if (buildRight) {
                 for (int i = 2; i < shipLength*2;i++){
                     if (i%2==0) {
                         coordinates[i] = coordinates[0];
