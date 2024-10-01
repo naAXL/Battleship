@@ -26,11 +26,10 @@ public class Battleship {
         char[][] gameBoard = createGameBoard(gameBoardLength, water);
 
         gameBoard = placeShips(gameBoardLength, gameBoard, bigShip, smallShip, mediumShip, water, bigShipsNumber, mediumShipsNumber, smallShipsNumber, takenSpaces);
-
         displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
-
-        int[] userShot = getUserShotCoordinates();
-        System.out.println(userShot[0] + " " + userShot[1]);
+        gameBoard = updateGameBoardAfterUserShot(gameBoard, water, miss, hit, sunk, bigShip, mediumShip, smallShip);
+        displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
+   
     }
 
     private static char[][] placeShips(int gameBoardLength, char[][] gameBoard, char bigShip, char smallShip, char mediumShip, char water, int bigShipsNumber, int mediumShipsNumber, int smallShipsNumber, ArrayList<Integer> takenSpaces) {
@@ -163,13 +162,37 @@ public class Battleship {
 
     }
 
+    private static char[][] updateGameBoardAfterUserShot(char[][] gameBoard, char water, char miss, char hit, char sunk, char bigShip, char mediumShip, char smallShip) {
+        int[] userShotCoordinates = getUserShotCoordinates();
+        boolean shotIsValid = false;
+
+        while (!shotIsValid) {
+            char shotTile = gameBoard[userShotCoordinates[0]][userShotCoordinates[1]];
+
+            if (shotTile == miss || shotTile == hit || shotTile == sunk) {
+                System.out.println("You've have shot this tile before try again!");
+                userShotCoordinates = getUserShotCoordinates();
+            }
+            else if(shotTile == water) {
+                gameBoard[userShotCoordinates[0]][userShotCoordinates[1]] = miss;
+                shotIsValid = true;
+            }
+            else {
+                gameBoard[userShotCoordinates[0]][userShotCoordinates[1]] = hit;
+                shotIsValid = true;
+            }
+        }
+        
+        return gameBoard;
+    }
+
     private static int[] getUserShotCoordinates() {
         int[] shotCoordinates = new int[2];
         List<Character> possibleShotCharacters = Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6', '7');
         boolean shotIsValid = false;
+        System.out.println("Take your shot!");
 
         do {
-            System.out.println("Take your shot!");
             String userGuess = new Scanner(System.in).nextLine();
             char verticalCharacter = Character.toUpperCase(userGuess.charAt(0));
             char horizontalCharacter = userGuess.charAt(1);
@@ -181,7 +204,7 @@ public class Battleship {
                 shotIsValid = true;
             }
             else {
-                System.out.println("Out of bound!");
+                System.out.println("Out of bound! Try again");
             }
         } while (!shotIsValid);
 
