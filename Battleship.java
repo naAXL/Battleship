@@ -2,6 +2,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Battleship {
 
@@ -28,6 +29,8 @@ public class Battleship {
 
         displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
 
+        int[] userShot = getUserShotCoordinates();
+        System.out.println(userShot[0] + " " + userShot[1]);
     }
 
     private static char[][] placeShips(int gameBoardLength, char[][] gameBoard, char bigShip, char smallShip, char mediumShip, char water, int bigShipsNumber, int mediumShipsNumber, int smallShipsNumber, ArrayList<Integer> takenSpaces) {
@@ -158,6 +161,31 @@ public class Battleship {
             System.out.println();
         }
 
+    }
+
+    private static int[] getUserShotCoordinates() {
+        int[] shotCoordinates = new int[2];
+        List<Character> possibleShotCharacters = Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6', '7');
+        boolean shotIsValid = false;
+
+        do {
+            System.out.println("Take your shot!");
+            String userGuess = new Scanner(System.in).nextLine();
+            char verticalCharacter = Character.toUpperCase(userGuess.charAt(0));
+            char horizontalCharacter = userGuess.charAt(1);
+            boolean verticalCharacterIsValid = possibleShotCharacters.contains(verticalCharacter);
+            boolean horizontalCharacterIsValid = possibleShotCharacters.contains(horizontalCharacter);
+            if (verticalCharacterIsValid && horizontalCharacterIsValid){
+                shotCoordinates[0] = (int)verticalCharacter - 65;
+                shotCoordinates[1] = (int)horizontalCharacter - 49;
+                shotIsValid = true;
+            }
+            else {
+                System.out.println("Out of bound!");
+            }
+        } while (!shotIsValid);
+
+        return shotCoordinates;
     }
 
     private static char[][] createGameBoard(int gameBoardLength, char water) {
