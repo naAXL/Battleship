@@ -201,7 +201,7 @@ public class Battleship {
                     gameBoard = sinkShip(userShotCoordinates, gameBoard, 2, sunk, hit);
                 }
                 shotIsValid = true;
-            } else if (shotTile == mediumShip1) {
+            } else if (shotTile == mediumShip2) {
                 gameBoard[userShotCoordinates[0]][userShotCoordinates[1]] = hit;
                 mediumShip2HP--;
                 if (mediumShip2HP == 0) {
@@ -216,17 +216,21 @@ public class Battleship {
 
     private static int[] getUserShotCoordinates() {
         int[] shotCoordinates = new int[2];
-        List<Character> possibleShotCharacters = Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4',
-                '5', '6', '7');
+        List<Character> possibleHorizontalShotCharacters = Arrays.asList('1', '2', '3', '4', '5', '6', '7');
+        List<Character> possibleVerticalShotCharacters = Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G' );
         boolean shotIsValid = false;
         System.out.println("Take your shot!");
 
         do {
             String userGuess = new Scanner(System.in).nextLine();
+            if (userGuess.length() != 2) {
+                System.out.println("coordinates format should letter and number (e.g. a1, B2, f7...)\nTry one more time!");
+                continue;
+            }
             char verticalCharacter = Character.toUpperCase(userGuess.charAt(0));
             char horizontalCharacter = userGuess.charAt(1);
-            boolean verticalCharacterIsValid = possibleShotCharacters.contains(verticalCharacter);
-            boolean horizontalCharacterIsValid = possibleShotCharacters.contains(horizontalCharacter);
+            boolean verticalCharacterIsValid = possibleVerticalShotCharacters.contains(verticalCharacter);
+            boolean horizontalCharacterIsValid = possibleHorizontalShotCharacters.contains(horizontalCharacter);
             if (verticalCharacterIsValid && horizontalCharacterIsValid) {
                 shotCoordinates[0] = (int) verticalCharacter - 65;
                 shotCoordinates[1] = (int) horizontalCharacter - 49;
