@@ -9,35 +9,53 @@ public class Battleship {
     static int bigShipHP;
     static int mediumShip1HP;
     static int mediumShip2HP;
+    static int shipsTotalNumber;
+    static int shotsOnePlayerNumber;
 
     public static void main(String[] args) {
-        String name = requestPlayerName();
-        char water = '-';
-        char miss = 'O';
-        char hit = 'X';
-        char sunk = 'S';
-        char smallShip = 's';
-        char mediumShip1 = 'm';
-        char mediumShip2 = 'M';
-        char bigShip = 'b';
-        int gameBoardLength = 7;
-        int smallShipsNumber = 4;
-        bigShipHP = 3;
-        mediumShip1HP = 2;
-        mediumShip2HP = 2;
+        boolean continueGame = true;
 
-        ArrayList<Integer> takenSpaces = new ArrayList<Integer>();
+        do {
+            clearScreen();
+            String name = requestPlayerName();
+            continueGame = true;
+            char water = '-';
+            char miss = 'O';
+            char hit = 'X';
+            char sunk = 'S';
+            char smallShip = 's';
+            char mediumShip1 = 'm';
+            char mediumShip2 = 'M';
+            char bigShip = 'b';
+            int gameBoardLength = 7;
+            int smallShipsNumber = 4;
+            bigShipHP = 3;
+            mediumShip1HP = 2;
+            mediumShip2HP = 2;
+            shipsTotalNumber = 7;
+            shotsOnePlayerNumber = 0;
 
-        char[][] gameBoard = createGameBoard(gameBoardLength, water);
+            ArrayList<Integer> takenSpaces = new ArrayList<Integer>();
 
-        gameBoard = placeShips(gameBoardLength, gameBoard, bigShip, smallShip, mediumShip1, mediumShip2, water,
-                smallShipsNumber, takenSpaces);
-        displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
-        for (int i = 0; i < 15; i++) {
-            gameBoard = updateGameBoardAfterUserShot(gameBoard, water, miss, hit, sunk, bigShip, mediumShip1,
-                    mediumShip2, smallShip);
+            char[][] gameBoard = createGameBoard(gameBoardLength, water);
+
+            gameBoard = placeShips(gameBoardLength, gameBoard, bigShip, smallShip, mediumShip1, mediumShip2, water,
+                    smallShipsNumber, takenSpaces);
+
+            while (shipsTotalNumber > 0) {
+                displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
+                gameBoard = updateGameBoardAfterUserShot(gameBoard, water, miss, hit, sunk, bigShip, mediumShip1, mediumShip2, smallShip);
+                clearScreen();
+                shotsOnePlayerNumber++;
+            }
+
             displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
-        }
+
+            displayGameWinScreen(name);
+            continueGame = requestGameContinuation();
+        } while (continueGame);
+
+
     }
 
     private static char[][] placeShips(int gameBoardLength, char[][] gameBoard, char bigShip, char smallShip,
@@ -187,6 +205,7 @@ public class Battleship {
             } else if (shotTile == smallShip) {
                 gameBoard[userShotCoordinates[0]][userShotCoordinates[1]] = sunk;
                 shotIsValid = true;
+                shipsTotalNumber--;
             } else if (shotTile == bigShip) {
                 gameBoard[userShotCoordinates[0]][userShotCoordinates[1]] = hit;
                 bigShipHP--;
@@ -265,6 +284,7 @@ public class Battleship {
             }
         }
 
+        shipsTotalNumber--;
         return gameBoard;
     }
 
@@ -283,9 +303,28 @@ public class Battleship {
         System.out.flush();
     }
 
+    private static void displayGameWinScreen(String name) {
+        System.out.println("Congratulations, " + name + ", you have won!");
+        System.out.println("You've made " + shotsOnePlayerNumber + " shots!");
+    }
+
     private static String requestPlayerName() {
+        System.out.println("What is your name?");
         String name = new Scanner(System.in).nextLine();
 
         return name;
+    }
+
+    private static boolean requestGameContinuation() {
+        System.out.println("Do you wish to continue playing? Yes or No");
+        String userWish = new Scanner(System.in).nextLine();
+
+        if (userWish.equalsIgnoreCase("yes")) {
+            return true;
+        }
+
+        return false;
+
+
     }
 }
