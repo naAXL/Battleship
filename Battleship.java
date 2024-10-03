@@ -1,8 +1,6 @@
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class Battleship {
 
@@ -14,6 +12,8 @@ public class Battleship {
 
     public static void main(String[] args) {
         boolean continueGame = true;
+        Map<String, Integer> playersRanking = new HashMap<>();
+
 
         do {
             clearScreen();
@@ -21,8 +21,8 @@ public class Battleship {
             continueGame = true;
             char water = '-';
             char miss = 'O';
-            char hit = 'X';
-            char sunk = 'S';
+            char hit = '+';
+            char sunk = 'X';
             char smallShip = 's';
             char mediumShip1 = 'm';
             char mediumShip2 = 'M';
@@ -51,10 +51,14 @@ public class Battleship {
 
             displayGameBoardToUser(gameBoard, gameBoardLength, water, hit, miss, sunk);
 
+            playersRanking.put(name, shotsOnePlayerNumber);
             displayGameWinScreen(name);
             continueGame = requestGameContinuation();
         } while (continueGame);
 
+        clearScreen();
+        playersRanking = sortRanking(playersRanking, true);
+        displayPlayers(playersRanking);
 
     }
 
@@ -298,6 +302,19 @@ public class Battleship {
         return gameBoard;
     }
 
+    private static Map<String, Integer> sortRanking(Map<String, Integer> playerRanking, boolean order)
+    {
+        List<Entry<String, Integer>> list = new LinkedList<> (playerRanking.entrySet());
+
+        list.sort((o1, o2) -> order ? o1.getValue().compareTo(o2.getValue()) == 0
+                ? o1.getKey().compareTo(o2.getKey())
+                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
+        return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+
+    }
+
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -326,5 +343,10 @@ public class Battleship {
         return false;
 
 
+    }
+
+    private static void displayPlayers(Map<String, Integer> playerRanking)
+    {
+        playerRanking.forEach((key, value) -> System.out.println("Player : " + key + " Number of shots : " + value));
     }
 }
